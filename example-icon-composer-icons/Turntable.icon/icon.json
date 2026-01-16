@@ -1,0 +1,202 @@
+{
+  "fill" : {
+    "automatic-gradient" : "display-p3:0.54510,0.36863,0.21176,1.00000"
+  },
+  "groups" : [
+    {
+      "hidden" : false,
+      "layers" : [
+        {
+          "fill" : {
+            "solid" : "extended-gray:0.50000,1.00000"
+          },
+          "image-name" : "VerticalArm.png",
+          "name" : "VerticalArm",
+          "position" : {
+            "scale" : 0.35,
+            "translation-in-points" : [
+              300,
+              -170
+            ]
+          }
+        },
+        {
+          "fill" : {
+            "solid" : "srgb:0.50196,0.00000,0.00000,1.00000"
+          },
+          "image-name" : "Button.png",
+          "name" : "Button",
+          "position" : {
+            "scale" : 0.5,
+            "translation-in-points" : [
+              -360,
+              330
+            ]
+          }
+        },
+        {
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "srgb:0.50196,0.00000,0.00000,1.00000"
+              }
+            },
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "extended-gray:0.70000,1.00000"
+              }
+            }
+          ],
+          "image-name" : "Label.png",
+          "name" : "Label",
+          "position" : {
+            "scale" : 0.4,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill-specializations" : [
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "automatic-gradient" : "extended-gray:0.30000,1.00000"
+              }
+            }
+          ],
+          "image-name" : "Record.png",
+          "name" : "Record",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "hidden" : true,
+      "layers" : [
+        {
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "srgb:0.50196,0.00000,0.00000,1.00000"
+              }
+            },
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "extended-gray:0.85000,1.00000"
+              }
+            }
+          ],
+          "image-name" : "Buttons 2.png",
+          "name" : "Buttons",
+          "position" : {
+            "scale" : 0.3,
+            "translation-in-points" : [
+              -300,
+              325
+            ]
+          }
+        },
+        {
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "extended-gray:0.50000,1.00000"
+              }
+            },
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "extended-gray:0.84726,1.00000"
+              }
+            }
+          ],
+          "hidden" : false,
+          "image-name" : "Arm.png",
+          "name" : "Arm",
+          "position" : {
+            "scale" : 0.8,
+            "translation-in-points" : [
+              350,
+              -250
+            ]
+          }
+        },
+        {
+          "fill-specializations" : [
+            {
+              "value" : {
+                "solid" : "srgb:0.50196,0.00000,0.00000,1.00000"
+              }
+            },
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "solid" : "extended-gray:0.70000,1.00000"
+              }
+            }
+          ],
+          "image-name" : "Label.png",
+          "name" : "Label",
+          "position" : {
+            "scale" : 0.4,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill-specializations" : [
+            {
+              "appearance" : "tinted",
+              "value" : {
+                "automatic-gradient" : "extended-gray:0.30000,1.00000"
+              }
+            }
+          ],
+          "image-name" : "Record.png",
+          "name" : "Record",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}
