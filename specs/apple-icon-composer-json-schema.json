@@ -1,0 +1,781 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/apple-icon-composer-json-schema.json",
+  "title": "Apple Icon Composer JSON Schema",
+  "description": "Schema for Apple Icon Composer icon.json files",
+  "type": "object",
+  "properties": {
+    "color-space-for-untagged-svg-colors": {
+      "type": "string",
+      "enum": ["display-p3", "srgb", "extended-gray"]
+    },
+    "fill": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": ["automatic", "system-dark", "system-light", "none"]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "solid": {
+              "type": "string"
+            },
+            "linear-gradient": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "automatic-gradient": {
+              "type": "string"
+            },
+            "orientation": {
+              "type": "object",
+              "properties": {
+                "start": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": ["x", "y"],
+                  "additionalProperties": false
+                },
+                "stop": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": ["x", "y"],
+                  "additionalProperties": false
+                }
+              },
+              "required": ["start", "stop"],
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "fill-specializations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "appearance": {
+            "type": "string",
+            "enum": ["dark", "tinted"]
+          },
+          "idiom": {
+            "type": "string",
+            "enum": ["square", "watchOS"]
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "string",
+                "enum": ["automatic", "system-dark", "system-light", "none"]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "solid": {
+                    "type": "string"
+                  },
+                  "linear-gradient": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "automatic-gradient": {
+                    "type": "string"
+                  },
+                  "orientation": {
+                    "type": "object",
+                    "properties": {
+                      "start": {
+                        "type": "object",
+                        "properties": {
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": ["x", "y"],
+                        "additionalProperties": false
+                      },
+                      "stop": {
+                        "type": "object",
+                        "properties": {
+                          "x": {
+                            "type": "number"
+                          },
+                          "y": {
+                            "type": "number"
+                          }
+                        },
+                        "required": ["x", "y"],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": ["start", "stop"],
+                    "additionalProperties": false
+                  }
+                },
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "required": ["value"]
+      }
+    },
+    "groups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/group"
+      }
+    },
+    "supported-platforms": {
+      "type": "object",
+      "properties": {
+        "squares": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["shared"]
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": ["iOS", "macOS", "shared"]
+              }
+            }
+          ]
+        },
+        "circles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["watchOS"]
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["groups", "supported-platforms"],
+  "additionalProperties": false,
+  "definitions": {
+    "group": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "hidden-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "appearance": {
+                    "type": "string",
+                    "enum": ["dark", "tinted"]
+                  },
+                  "idiom": {
+                    "type": "string",
+                    "enum": ["square", "watchOS"]
+                  },
+                  "value": {
+                    "type": "boolean"
+                  }
+                },
+                "required": ["value"],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/layer"
+          }
+        },
+        "blend-mode": {
+          "type": "string",
+          "enum": ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "soft-light", "hard-light", "difference", "exclusion", "plus-darker", "plus-lighter"]
+        },
+        "blend-mode-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "enum": ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "soft-light", "hard-light", "difference", "exclusion", "plus-darker", "plus-lighter"]
+                  }
+                },
+                "required": ["value"]
+              }
+            ]
+          }
+        },
+        "blur-material": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          ]
+        },
+        "blur-material-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "oneOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      }
+                    ]
+                  }
+                },
+                "required": ["value"]
+              }
+            ]
+          }
+        },
+        "lighting": {
+          "type": "string",
+          "enum": ["combined", "individual"]
+        },
+        "lighting-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "enum": ["individual"]
+                  }
+                },
+                "required": ["value"]
+              }
+            ]
+          }
+        },
+        "shadow": {
+          "$ref": "#/definitions/shadow"
+        },
+        "shadow-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "$ref": "#/definitions/shadow"
+                  }
+                },
+                "required": ["value"]
+              }
+            ]
+          }
+        },
+        "specular": {
+          "type": "boolean"
+        },
+        "specular-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "boolean"
+                  }
+                },
+                "required": ["value"]
+              }
+            ]
+          }
+        },
+        "translucency": {
+          "$ref": "#/definitions/translucency"
+        },
+        "translucency-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "$ref": "#/definitions/translucency"
+                  }
+                },
+                "required": ["value"]
+              }
+            ]
+          }
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "opacity-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "appearance": {
+                    "type": "string",
+                    "enum": ["dark", "tinted"]
+                  },
+                  "idiom": {
+                    "type": "string",
+                    "enum": ["square", "watchOS"]
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": ["value"],
+                "additionalProperties": false
+              }
+            ]
+          }
+        },
+        "position": {
+          "$ref": "#/definitions/position"
+        },
+        "position-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "appearance": {
+                    "type": "string",
+                    "enum": ["dark", "tinted"]
+                  },
+                  "idiom": {
+                    "type": "string",
+                    "enum": ["square", "watchOS"]
+                  },
+                  "value": {
+                    "$ref": "#/definitions/position"
+                  }
+                },
+                "required": ["value"],
+                "additionalProperties": false
+              }
+            ]
+          }
+        }
+      },
+      "required": ["layers"],
+      "additionalProperties": false
+    },
+    "layer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "image-name": {
+          "type": "string"
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "hidden-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "boolean"
+                  }
+                },
+                "required": ["value"]
+              }
+            ]
+          }
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "opacity-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "required": ["value"]
+              }
+            ]
+          }
+        },
+        "blend-mode": {
+          "type": "string",
+          "enum": ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "soft-light", "hard-light", "difference", "exclusion", "plus-darker", "plus-lighter"]
+        },
+        "blend-mode-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "enum": ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "soft-light", "hard-light", "difference", "exclusion", "plus-darker", "plus-lighter"]
+                  }
+                },
+                "required": ["value"]
+              }
+            ]
+          }
+        },
+        "fill": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["automatic", "system-dark", "system-light", "none"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "solid": {
+                  "type": "string"
+                },
+                "linear-gradient": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 2,
+                  "maxItems": 2
+                },
+                "automatic-gradient": {
+                  "type": "string"
+                },
+                "orientation": {
+                  "type": "object",
+                  "properties": {
+                    "start": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number"
+                        },
+                        "y": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["x", "y"]
+                    },
+                    "stop": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number"
+                        },
+                        "y": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["x", "y"]
+                    }
+                  },
+                  "required": ["start", "stop"]
+                }
+              }
+            }
+          ]
+        },
+        "fill-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "enum": ["automatic", "system-dark", "system-light", "none"]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "solid": {
+                            "type": "string"
+                          },
+                          "linear-gradient": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "minItems": 2,
+                            "maxItems": 2
+                          },
+                          "automatic-gradient": {
+                            "type": "string"
+                          },
+                          "orientation": {
+                            "type": "object",
+                            "properties": {
+                              "start": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": ["x", "y"],
+                                "additionalProperties": false
+                              },
+                              "stop": {
+                                "type": "object",
+                                "properties": {
+                                  "x": {
+                                    "type": "number"
+                                  },
+                                  "y": {
+                                    "type": "number"
+                                  }
+                                },
+                                "required": ["x", "y"],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": ["start", "stop"],
+                            "additionalProperties": false
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "required": ["value"]
+              }
+            ]
+          }
+        },
+        "glass": {
+          "type": "boolean"
+        },
+        "glass-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "boolean"
+                  }
+                },
+                "required": ["value"]
+              }
+            ]
+          }
+        },
+        "position": {
+          "$ref": "#/definitions/position"
+        },
+        "position-specializations": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              {
+                "$ref": "#/definitions/specialization"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "$ref": "#/definitions/position"
+                  }
+                },
+                "required": ["value"]
+              }
+            ]
+          }
+        }
+      },
+      "required": ["image-name", "name"],
+      "additionalProperties": false
+    },
+    "specialization": {
+      "type": "object",
+      "properties": {
+        "appearance": {
+          "type": "string",
+          "enum": ["dark", "tinted"]
+        },
+        "idiom": {
+          "type": "string",
+          "enum": ["square", "watchOS"]
+        }
+      }
+    },
+    "position": {
+      "type": "object",
+      "properties": {
+        "scale": {
+          "type": "number"
+        },
+        "translation-in-points": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      },
+      "required": ["scale", "translation-in-points"],
+      "additionalProperties": false
+    },
+    "shadow": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["neutral", "layer-color", "none"]
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": ["kind", "opacity"],
+      "additionalProperties": false
+    },
+    "translucency": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": ["enabled", "value"],
+      "additionalProperties": false
+    }
+  }
+}
