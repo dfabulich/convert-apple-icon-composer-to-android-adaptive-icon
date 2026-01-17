@@ -101,8 +101,9 @@ async function convertIcon(iconFolder, outputDir) {
     console.log('Step 5/5: Generating Android resources...');
     const resources = await createAndroidResourceStructure(
       outputDir,
+      originalIconData,
       tempFullPaddedPath,
-      tempBackgroundPaddedPath,
+      tempBackgroundPath, // Use unpadded background for color sampling
       tempForegroundPaddedPath
     );
     console.log('  ✓ Android resources created\n');
@@ -111,9 +112,10 @@ async function convertIcon(iconFolder, outputDir) {
     console.log(`\nAndroid Adaptive Icon resources:`);
     console.log(`  ${resources.anydpiDir}/`);
     console.log(`    └── ic_launcher.xml (API 26+)`);
+    console.log(`  ${resources.drawableDir}/`);
+    console.log(`    └── ic_launcher_background.xml (gradient drawable)`);
     console.log(`  ${resources.mipmapDir}/`);
     console.log(`    ├── ic_launcher.png (API 25 fallback)`);
-    console.log(`    ├── ic_launcher_background.png`);
     console.log(`    └── ic_launcher_foreground.png`);
 
   } finally {
