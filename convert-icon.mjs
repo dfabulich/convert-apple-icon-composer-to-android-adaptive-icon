@@ -86,8 +86,9 @@ async function convertIcon(iconFolder, outputDir) {
 
     // Step 4: Generate Android Adaptive Icon resource structure
     console.log('Step 4/4: Generating Android resources...');
-    const resourceDir = await createAndroidResourceStructure(
+    const resources = await createAndroidResourceStructure(
       outputDir,
+      tempFullPath,
       tempBackgroundPath,
       tempForegroundPath
     );
@@ -95,12 +96,12 @@ async function convertIcon(iconFolder, outputDir) {
 
     console.log('Conversion complete!');
     console.log(`\nAndroid Adaptive Icon resources:`);
-    const mipmapDir = path.join(outputDir, 'res', 'mipmap-xxxhdpi');
-    console.log(`  ${mipmapDir}/`);
+    console.log(`  ${resources.anydpiDir}/`);
+    console.log(`    └── ic_launcher.xml (API 26+)`);
+    console.log(`  ${resources.mipmapDir}/`);
+    console.log(`    ├── ic_launcher.png (API 25 fallback)`);
     console.log(`    ├── ic_launcher_background.png`);
-    console.log(`    ├── ic_launcher_foreground.png`);
-    console.log(`    └── ic_launcher/`);
-    console.log(`        └── adaptive-icon.xml`);
+    console.log(`    └── ic_launcher_foreground.png`);
 
   } finally {
     // Cleanup temporary directory
@@ -127,7 +128,7 @@ async function main() {
   }
 
   const iconFolder = path.resolve(args[0]);
-  const outputDir = args[1] ? path.resolve(args[1]) : path.join(iconFolder, 'android');
+  const outputDir = args[1] ? path.resolve(args[1]) : path.join(process.cwd(), 'output', path.basename(iconFolder, '.icon'));
 
   try {
     // Validate icon folder exists
