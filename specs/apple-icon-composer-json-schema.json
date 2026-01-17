@@ -7,142 +7,31 @@
   "properties": {
     "color-space-for-untagged-svg-colors": {
       "type": "string",
-      "enum": ["display-p3", "srgb", "extended-gray"]
+      "enum": ["display-p3", "srgb", "extended-gray"],
+      "description": "Color profile used for SVG colors that don't have an explicit color profile. Determines how untagged colors in SVG assets are interpreted."
     },
     "fill": {
-      "oneOf": [
-        {
-          "type": "string",
-          "enum": ["automatic", "system-dark", "system-light", "none"]
-        },
-        {
-          "type": "object",
-          "properties": {
-            "solid": {
-              "type": "string"
-            },
-            "linear-gradient": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "minItems": 2,
-              "maxItems": 2
-            },
-            "automatic-gradient": {
-              "type": "string"
-            },
-            "orientation": {
-              "type": "object",
-              "properties": {
-                "start": {
-                  "type": "object",
-                  "properties": {
-                    "x": {
-                      "type": "number"
-                    },
-                    "y": {
-                      "type": "number"
-                    }
-                  },
-                  "required": ["x", "y"],
-                  "additionalProperties": false
-                },
-                "stop": {
-                  "type": "object",
-                  "properties": {
-                    "x": {
-                      "type": "number"
-                    },
-                    "y": {
-                      "type": "number"
-                    }
-                  },
-                  "required": ["x", "y"],
-                  "additionalProperties": false
-                }
-              },
-              "required": ["start", "stop"],
-              "additionalProperties": false
-            }
-          },
-          "additionalProperties": false
-        }
-      ]
+      "description": "Canvas fill (background). On the canvas, 'automatic' adapts to system appearance (white in default, dark gradient in dark mode, grey in monochrome). 'system-dark' and 'system-light' use fixed dark/light colors. 'none' is the same as 'automatic'. Can also be a custom solid color or gradient object.",
+      "$ref": "#/definitions/fill-value"
     },
     "fill-specializations": {
       "type": "array",
+      "description": "Canvas fill values that vary by appearance (dark/tinted) or idiom (square/watchOS). Allows different fills for different system appearances or platforms.",
       "items": {
         "type": "object",
         "properties": {
           "appearance": {
             "type": "string",
-            "enum": ["dark", "tinted"]
+            "enum": ["dark", "tinted"],
+            "description": "System appearance mode: 'dark' for Dark Mode, 'tinted' for tinted app icons."
           },
           "idiom": {
             "type": "string",
-            "enum": ["square", "watchOS"]
+            "enum": ["square", "watchOS"],
+            "description": "Platform idiom: 'square' for iOS/macOS app icons, 'watchOS' for Apple Watch app icons."
           },
           "value": {
-            "oneOf": [
-              {
-                "type": "string",
-                "enum": ["automatic", "system-dark", "system-light", "none"]
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "solid": {
-                    "type": "string"
-                  },
-                  "linear-gradient": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "minItems": 2,
-                    "maxItems": 2
-                  },
-                  "automatic-gradient": {
-                    "type": "string"
-                  },
-                  "orientation": {
-                    "type": "object",
-                    "properties": {
-                      "start": {
-                        "type": "object",
-                        "properties": {
-                          "x": {
-                            "type": "number"
-                          },
-                          "y": {
-                            "type": "number"
-                          }
-                        },
-                        "required": ["x", "y"],
-                        "additionalProperties": false
-                      },
-                      "stop": {
-                        "type": "object",
-                        "properties": {
-                          "x": {
-                            "type": "number"
-                          },
-                          "y": {
-                            "type": "number"
-                          }
-                        },
-                        "required": ["x", "y"],
-                        "additionalProperties": false
-                      }
-                    },
-                    "required": ["start", "stop"],
-                    "additionalProperties": false
-                  }
-                },
-                "additionalProperties": false
-              }
-            ]
+            "$ref": "#/definitions/fill-value"
           }
         },
         "required": ["value"]
@@ -150,14 +39,17 @@
     },
     "groups": {
       "type": "array",
+      "description": "Array of layer groups. Groups contain layers and can have their own Liquid Glass effects, blend modes, positions, and other properties.",
       "items": {
         "$ref": "#/definitions/group"
       }
     },
     "supported-platforms": {
       "type": "object",
+      "description": "Specifies which platforms this icon targets. 'squares' for iOS/macOS app icons, 'circles' for watchOS app icons.",
       "properties": {
         "squares": {
+          "description": "Platform targeting for square icons (iOS and macOS). Can be 'shared' (all platforms) or an array specifying iOS, macOS, or shared.",
           "oneOf": [
             {
               "type": "string",
@@ -174,6 +66,7 @@
         },
         "circles": {
           "type": "array",
+          "description": "Platform targeting for circular icons (watchOS).",
           "items": {
             "type": "string",
             "enum": ["watchOS"]
@@ -190,12 +83,15 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "Name of the group."
         },
         "hidden": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether the group is hidden (not visible)."
         },
         "hidden-specializations": {
+          "description": "Visibility values that vary by appearance or idiom. Allows different visibility settings for different system appearances or platforms.",
           "type": "array",
           "items": {
             "allOf": [
@@ -225,15 +121,18 @@
         },
         "layers": {
           "type": "array",
+          "description": "Array of layers contained in this group.",
           "items": {
             "$ref": "#/definitions/layer"
           }
         },
         "blend-mode": {
           "type": "string",
-          "enum": ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "soft-light", "hard-light", "difference", "exclusion", "plus-darker", "plus-lighter"]
+          "enum": ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "soft-light", "hard-light", "difference", "exclusion", "plus-darker", "plus-lighter"],
+          "description": "Blend mode for compositing the group with layers beneath it. Standard compositing blend modes."
         },
         "blend-mode-specializations": {
+          "description": "Blend mode values that vary by appearance or idiom.",
           "type": "array",
           "items": {
             "allOf": [
@@ -254,6 +153,7 @@
           }
         },
         "blur-material": {
+          "description": "Blur amount for Liquid Glass effect. null when blur is disabled, or a number 0-1 (where 0.5 = 50%).",
           "oneOf": [
             {
               "type": "null"
@@ -266,6 +166,7 @@
           ]
         },
         "blur-material-specializations": {
+          "description": "Blur material values that vary by appearance or idiom.",
           "type": "array",
           "items": {
             "allOf": [
@@ -295,9 +196,11 @@
         },
         "lighting": {
           "type": "string",
-          "enum": ["combined", "individual"]
+          "enum": ["combined", "individual"],
+          "description": "Liquid Glass lighting mode: 'combined' means all layers share the same lighting, 'individual' means each layer gets its own lighting calculation."
         },
         "lighting-specializations": {
+          "description": "Lighting mode values that vary by appearance or idiom.",
           "type": "array",
           "items": {
             "allOf": [
@@ -318,9 +221,11 @@
           }
         },
         "shadow": {
-          "$ref": "#/definitions/shadow"
+          "$ref": "#/definitions/shadow",
+          "description": "Shadow settings for the group (Liquid Glass effect)."
         },
         "shadow-specializations": {
+          "description": "Shadow values that vary by appearance or idiom.",
           "type": "array",
           "items": {
             "allOf": [
@@ -340,9 +245,11 @@
           }
         },
         "specular": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether specular highlights (bright, shiny reflections) are enabled for the Liquid Glass effect."
         },
         "specular-specializations": {
+          "description": "Specular highlight values that vary by appearance or idiom.",
           "type": "array",
           "items": {
             "allOf": [
@@ -362,9 +269,11 @@
           }
         },
         "translucency": {
-          "$ref": "#/definitions/translucency"
+          "$ref": "#/definitions/translucency",
+          "description": "Translucency settings for the Liquid Glass effect. Translucency is like a gradient of opacity, starting opaque at the top and becoming less opaque at the bottom."
         },
         "translucency-specializations": {
+          "description": "Translucency values that vary by appearance or idiom.",
           "type": "array",
           "items": {
             "allOf": [
@@ -386,10 +295,12 @@
         "opacity": {
           "type": "number",
           "minimum": 0,
-          "maximum": 1
+          "maximum": 1,
+          "description": "Opacity of the group (0 = transparent, 1 = fully opaque). Values are stored as decimals (e.g., 0.75 = 75%)."
         },
         "opacity-specializations": {
           "type": "array",
+          "description": "Opacity values that vary by appearance or idiom.",
           "items": {
             "allOf": [
               {
@@ -419,10 +330,12 @@
           }
         },
         "position": {
-          "$ref": "#/definitions/position"
+          "$ref": "#/definitions/position",
+          "description": "Position and scale transform for the group."
         },
         "position-specializations": {
           "type": "array",
+          "description": "Position and scale values that vary by appearance or idiom. Allows platform-specific layouts.",
           "items": {
             "allOf": [
               {
@@ -457,16 +370,20 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "Name of the layer."
         },
         "image-name": {
-          "type": "string"
+          "type": "string",
+          "description": "Filename of the image asset in the Assets folder (PNG or SVG)."
         },
         "hidden": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether the layer is hidden (not visible)."
         },
         "hidden-specializations": {
           "type": "array",
+          "description": "Visibility values that vary by appearance or idiom.",
           "items": {
             "allOf": [
               {
@@ -487,10 +404,12 @@
         "opacity": {
           "type": "number",
           "minimum": 0,
-          "maximum": 1
+          "maximum": 1,
+          "description": "Opacity of the layer (0 = transparent, 1 = fully opaque). Values are stored as decimals (e.g., 0.43 = 43%)."
         },
         "opacity-specializations": {
           "type": "array",
+          "description": "Opacity values that vary by appearance or idiom.",
           "items": {
             "allOf": [
               {
@@ -512,9 +431,11 @@
         },
         "blend-mode": {
           "type": "string",
-          "enum": ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "soft-light", "hard-light", "difference", "exclusion", "plus-darker", "plus-lighter"]
+          "enum": ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "soft-light", "hard-light", "difference", "exclusion", "plus-darker", "plus-lighter"],
+          "description": "Blend mode for compositing the layer with layers beneath it. Standard compositing blend modes."
         },
         "blend-mode-specializations": {
+          "description": "Blend mode values that vary by appearance or idiom.",
           "type": "array",
           "items": {
             "allOf": [
@@ -535,64 +456,12 @@
           }
         },
         "fill": {
-          "oneOf": [
-            {
-              "type": "string",
-              "enum": ["automatic", "system-dark", "system-light", "none"]
-            },
-            {
-              "type": "object",
-              "properties": {
-                "solid": {
-                  "type": "string"
-                },
-                "linear-gradient": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "minItems": 2,
-                  "maxItems": 2
-                },
-                "automatic-gradient": {
-                  "type": "string"
-                },
-                "orientation": {
-                  "type": "object",
-                  "properties": {
-                    "start": {
-                      "type": "object",
-                      "properties": {
-                        "x": {
-                          "type": "number"
-                        },
-                        "y": {
-                          "type": "number"
-                        }
-                      },
-                      "required": ["x", "y"]
-                    },
-                    "stop": {
-                      "type": "object",
-                      "properties": {
-                        "x": {
-                          "type": "number"
-                        },
-                        "y": {
-                          "type": "number"
-                        }
-                      },
-                      "required": ["x", "y"]
-                    }
-                  },
-                  "required": ["start", "stop"]
-                }
-              }
-            }
-          ]
+          "description": "Fill color for the layer. 'automatic' and 'none' both render the asset's natural colors. 'system-dark' and 'system-light' use fixed colors. Can also be a custom solid color or gradient object.",
+          "$ref": "#/definitions/fill-value"
         },
         "fill-specializations": {
           "type": "array",
+          "description": "Layer fill values that vary by appearance or idiom.",
           "items": {
             "allOf": [
               {
@@ -602,64 +471,7 @@
                 "type": "object",
                 "properties": {
                   "value": {
-                    "oneOf": [
-                      {
-                        "type": "string",
-                        "enum": ["automatic", "system-dark", "system-light", "none"]
-                      },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "solid": {
-                            "type": "string"
-                          },
-                          "linear-gradient": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "minItems": 2,
-                            "maxItems": 2
-                          },
-                          "automatic-gradient": {
-                            "type": "string"
-                          },
-                          "orientation": {
-                            "type": "object",
-                            "properties": {
-                              "start": {
-                                "type": "object",
-                                "properties": {
-                                  "x": {
-                                    "type": "number"
-                                  },
-                                  "y": {
-                                    "type": "number"
-                                  }
-                                },
-                                "required": ["x", "y"],
-                                "additionalProperties": false
-                              },
-                              "stop": {
-                                "type": "object",
-                                "properties": {
-                                  "x": {
-                                    "type": "number"
-                                  },
-                                  "y": {
-                                    "type": "number"
-                                  }
-                                },
-                                "required": ["x", "y"],
-                                "additionalProperties": false
-                              }
-                            },
-                            "required": ["start", "stop"],
-                            "additionalProperties": false
-                          }
-                        }
-                      }
-                    ]
+                    "$ref": "#/definitions/fill-value"
                   }
                 },
                 "required": ["value"]
@@ -668,9 +480,11 @@
           }
         },
         "glass": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether the layer participates in Liquid Glass effects. When the group's Liquid Glass mode is 'Individual', setting this to false opts the layer out of the effect."
         },
         "glass-specializations": {
+          "description": "Glass effect values that vary by appearance or idiom.",
           "type": "array",
           "items": {
             "allOf": [
@@ -690,10 +504,12 @@
           }
         },
         "position": {
-          "$ref": "#/definitions/position"
+          "$ref": "#/definitions/position",
+          "description": "Position and scale transform for the layer."
         },
         "position-specializations": {
           "type": "array",
+          "description": "Position and scale values that vary by appearance or idiom. Allows platform-specific layouts.",
           "items": {
             "allOf": [
               {
@@ -717,25 +533,31 @@
     },
     "specialization": {
       "type": "object",
+      "description": "Base schema for appearance/idiom specialization selectors. Used in all *-specializations arrays to specify which appearance or platform a value applies to.",
       "properties": {
         "appearance": {
           "type": "string",
-          "enum": ["dark", "tinted"]
+          "enum": ["dark", "tinted"],
+          "description": "System appearance mode: 'dark' for Dark Mode, 'tinted' for tinted app icons."
         },
         "idiom": {
           "type": "string",
-          "enum": ["square", "watchOS"]
+          "enum": ["square", "watchOS"],
+          "description": "Platform idiom: 'square' for iOS/macOS app icons, 'watchOS' for Apple Watch app icons."
         }
       }
     },
     "position": {
       "type": "object",
+      "description": "2D transform specifying position and scale. Coordinates and scale are in points (1/72 inch), the same unit used for icon size.",
       "properties": {
         "scale": {
-          "type": "number"
+          "type": "number",
+          "description": "Scale factor (e.g., 0.5 = 50% scale, 1.0 = 100%, 2.0 = 200%)."
         },
         "translation-in-points": {
           "type": "array",
+          "description": "Translation offset [x, y] in points.",
           "items": {
             "type": "number"
           },
@@ -748,15 +570,18 @@
     },
     "shadow": {
       "type": "object",
+      "description": "Shadow settings for Liquid Glass effects.",
       "properties": {
         "kind": {
           "type": "string",
-          "enum": ["neutral", "layer-color", "none"]
+          "enum": ["neutral", "layer-color", "none"],
+          "description": "Shadow type: 'neutral' (gray shadow), 'layer-color' (shadow matches layer color, called 'Chromatic' in UI), 'none' (no shadow, called 'Off' in UI)."
         },
         "opacity": {
           "type": "number",
           "minimum": 0,
-          "maximum": 1
+          "maximum": 1,
+          "description": "Shadow opacity (0 = transparent, 1 = fully opaque). Values are stored as decimals (e.g., 0.5 = 50%)."
         }
       },
       "required": ["kind", "opacity"],
@@ -764,18 +589,97 @@
     },
     "translucency": {
       "type": "object",
+      "description": "Translucency settings for Liquid Glass effects. Translucency is like a gradient of opacity, starting opaque at the top and becoming less opaque at the bottom.",
       "properties": {
         "enabled": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether translucency is enabled."
         },
         "value": {
           "type": "number",
           "minimum": 0,
-          "maximum": 1
+          "maximum": 1,
+          "description": "Translucency amount (0 = opaque, 1 = fully translucent). Values are stored as decimals (e.g., 0.5 = 50%)."
         }
       },
       "required": ["enabled", "value"],
       "additionalProperties": false
+    },
+    "fill-object": {
+      "type": "object",
+      "description": "Custom fill with solid color or gradient.",
+      "properties": {
+        "solid": {
+          "type": "string",
+          "description": "Solid color fill. Color string in format like 'display-p3:r,g,b,a' or 'srgb:r,g,b,a' or 'extended-gray:gray,alpha'."
+        },
+        "linear-gradient": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Linear gradient with explicitly defined top and bottom colors. Array of two color strings."
+        },
+        "automatic-gradient": {
+          "type": "string",
+          "description": "Gradient with auto-calculated top color. Only the bottom color is specified; Icon Composer calculates an appropriate top color."
+        },
+        "orientation": {
+          "type": "object",
+          "description": "Gradient direction defined by start and stop points.",
+          "properties": {
+            "start": {
+              "type": "object",
+              "description": "Starting point of the gradient (top color position).",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "X coordinate of the gradient start point."
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Y coordinate of the gradient start point."
+                }
+              },
+              "required": ["x", "y"],
+              "additionalProperties": false
+            },
+            "stop": {
+              "type": "object",
+              "description": "Ending point of the gradient (bottom color position).",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "description": "X coordinate of the gradient stop point."
+                },
+                "y": {
+                  "type": "number",
+                  "description": "Y coordinate of the gradient stop point."
+                }
+              },
+              "required": ["x", "y"],
+              "additionalProperties": false
+            }
+          },
+          "required": ["start", "stop"],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "fill-value": {
+      "description": "Fill value: either a string enum (automatic, system-dark, system-light, none) or a custom fill object. 'none' is the same as 'automatic'.",
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": ["automatic", "system-dark", "system-light", "none"]
+        },
+        {
+          "$ref": "#/definitions/fill-object"
+        }
+      ]
     }
   }
 }
