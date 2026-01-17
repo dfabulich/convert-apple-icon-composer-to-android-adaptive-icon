@@ -18,7 +18,7 @@ import { tmpdir } from 'os';
 
 import { readIconJson, createBackgroundOnlyJson, writeIconJson } from './lib/icon-utils.mjs';
 import { exportImage, verifyIctoolExists } from './lib/ictool-wrapper.mjs';
-import { extractForeground } from './lib/image-processor.mjs';
+import { extractForeground, prepareForAndroidAdaptiveIcon } from './lib/image-processor.mjs';
 import { createAndroidResourceStructure } from './lib/android-resources.mjs';
 
 const ICON_SIZE = 1024;
@@ -40,6 +40,7 @@ async function convertIcon(iconFolder, outputDir) {
   
   // Create temporary directory for modified icon.json
   const tempDir = await fs.mkdir(path.join(tmpdir(), `icon-convert-${Date.now()}`), { recursive: true });
+  console.log({tempDir});
   const tempIconFolder = path.join(tempDir, path.basename(iconFolder));
   await fs.mkdir(tempIconFolder, { recursive: true });
   
@@ -80,17 +81,29 @@ async function convertIcon(iconFolder, outputDir) {
     console.log('  ✓ Background exported\n');
 
     // Step 3: Extract foreground by subtracting background from full
-    console.log('Step 3/4: Extracting foreground...');
+    console.log('Step 3/5: Extracting foreground...');
     await extractForeground(tempFullPath, tempBackgroundPath, tempForegroundPath);
     console.log('  ✓ Foreground extracted\n');
 
-    // Step 4: Generate Android Adaptive Icon resource structure
-    console.log('Step 4/4: Generating Android resources...');
+    // Step 4: Prepare images for Android Adaptive Icon format
+    // Scale to 432x432 with 72px transparent padding around 264x264 safe area
+    console.log('Step 4/5: Preparing images for Android Adaptive Icon format...');
+    const tempFullPaddedPath = path.join(tempDir, 'full-padded.png');
+    const tempBackgroundPaddedPath = path.join(tempDir, 'background-padded.png');
+    const tempForegroundPaddedPath = path.join(tempDir, 'foreground-padded.png');
+    
+    await prepareForAndroidAdaptiveIcon(tempFullPath, tempFullPaddedPath);
+    await prepareForAndroidAdaptiveIcon(tempBackgroundPath, tempBackgroundPaddedPath);
+    await prepareForAndroidAdaptiveIcon(tempForegroundPath, tempForegroundPaddedPath);
+    console.log('  ✓ Images prepared (432x432 with 72px padding)\n');
+
+    // Step 5: Generate Android Adaptive Icon resource structure
+    console.log('Step 5/5: Generating Android resources...');
     const resources = await createAndroidResourceStructure(
       outputDir,
-      tempFullPath,
-      tempBackgroundPath,
-      tempForegroundPath
+      tempFullPaddedPath,
+      tempBackgroundPaddedPath,
+      tempForegroundPaddedPath
     );
     console.log('  ✓ Android resources created\n');
 
@@ -105,7 +118,7 @@ async function convertIcon(iconFolder, outputDir) {
 
   } finally {
     // Cleanup temporary directory
-    await fs.rm(tempDir, { recursive: true, force: true });
+    //await fs.rm(tempDir, { recursive: true, force: true });
   }
 }
 
