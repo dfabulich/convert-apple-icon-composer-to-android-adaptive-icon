@@ -24,6 +24,7 @@ import { createAndroidResourceStructure } from './lib/android-resources.mjs';
 const ICON_SIZE = 1024;
 const PLATFORM = 'iOS';
 const RENDITION = 'Default'; // Light appearance
+const MONOCHROME_RENDITION = 'ClearLight'; // Monochrome appearance
 
 /**
  * Main conversion function
@@ -58,7 +59,7 @@ async function convertIcon(iconFolder, outputDir) {
 
   try {
     // Step 1: Export full icon (background + foreground)
-    console.log('Step 1/4: Exporting full icon...');
+    console.log('Step 1/6: Exporting full icon...');
     await exportImage(iconFolder, tempFullPath, {
       width: ICON_SIZE,
       height: ICON_SIZE,
@@ -68,7 +69,7 @@ async function convertIcon(iconFolder, outputDir) {
     console.log('  ✓ Full icon exported\n');
 
     // Step 2: Create background-only version
-    console.log('Step 2/4: Exporting background only...');
+    console.log('Step 2/6: Exporting background only...');
     const backgroundOnlyData = createBackgroundOnlyJson(originalIconData);
     await writeIconJson(tempIconFolder, backgroundOnlyData);
     
@@ -81,30 +82,56 @@ async function convertIcon(iconFolder, outputDir) {
     console.log('  ✓ Background exported\n');
 
     // Step 3: Extract foreground by subtracting background from full
-    console.log('Step 3/5: Extracting foreground...');
+    console.log('Step 3/6: Extracting foreground...');
     await extractForeground(tempFullPath, tempBackgroundPath, tempForegroundPath);
     console.log('  ✓ Foreground extracted\n');
 
-    // Step 4: Prepare images for Android Adaptive Icon format
+    // Step 4: Export and extract monochrome foreground
+    console.log('Step 4/6: Exporting monochrome icon...');
+    const tempMonochromeFullPath = path.join(tempDir, 'monochrome-full.png');
+    const tempMonochromeBackgroundPath = path.join(tempDir, 'monochrome-background.png');
+    const tempMonochromeForegroundPath = path.join(tempDir, 'monochrome-foreground.png');
+    
+    await exportImage(iconFolder, tempMonochromeFullPath, {
+      width: ICON_SIZE,
+      height: ICON_SIZE,
+      platform: PLATFORM,
+      rendition: MONOCHROME_RENDITION
+    });
+    
+    await exportImage(tempIconFolder, tempMonochromeBackgroundPath, {
+      width: ICON_SIZE,
+      height: ICON_SIZE,
+      platform: PLATFORM,
+      rendition: MONOCHROME_RENDITION
+    });
+    
+    await extractForeground(tempMonochromeFullPath, tempMonochromeBackgroundPath, tempMonochromeForegroundPath);
+    console.log('  ✓ Monochrome foreground extracted\n');
+
+    // Step 5: Prepare images for Android Adaptive Icon format
     // Scale to 432x432 with 72px transparent padding around 264x264 safe area
-    console.log('Step 4/5: Preparing images for Android Adaptive Icon format...');
+    console.log('Step 5/6: Preparing images for Android Adaptive Icon format...');
     const tempFullPaddedPath = path.join(tempDir, 'full-padded.png');
     const tempBackgroundPaddedPath = path.join(tempDir, 'background-padded.png');
     const tempForegroundPaddedPath = path.join(tempDir, 'foreground-padded.png');
+    const tempMonochromeForegroundPaddedPath = path.join(tempDir, 'monochrome-foreground-padded.png');
     
     await prepareForAndroidAdaptiveIcon(tempFullPath, tempFullPaddedPath);
     await prepareForAndroidAdaptiveIcon(tempBackgroundPath, tempBackgroundPaddedPath);
     await prepareForAndroidAdaptiveIcon(tempForegroundPath, tempForegroundPaddedPath);
+    await prepareForAndroidAdaptiveIcon(tempMonochromeForegroundPath, tempMonochromeForegroundPaddedPath);
     console.log('  ✓ Images prepared (432x432 with 72px padding)\n');
 
-    // Step 5: Generate Android Adaptive Icon resource structure
-    console.log('Step 5/5: Generating Android resources...');
+    // Step 6: Generate Android Adaptive Icon resource structure
+    console.log('Step 6/6: Generating Android resources...');
     const resources = await createAndroidResourceStructure(
       outputDir,
       originalIconData,
       tempFullPaddedPath,
       tempBackgroundPath, // Use unpadded background for color sampling
-      tempForegroundPaddedPath
+      tempForegroundPaddedPath,
+      tempMonochromeForegroundPaddedPath
     );
     console.log('  ✓ Android resources created\n');
 
@@ -116,7 +143,8 @@ async function convertIcon(iconFolder, outputDir) {
     console.log(`    └── ic_launcher_background.xml (gradient drawable)`);
     console.log(`  ${resources.mipmapDir}/`);
     console.log(`    ├── ic_launcher.png (API 25 fallback)`);
-    console.log(`    └── ic_launcher_foreground.png`);
+    console.log(`    ├── ic_launcher_foreground.png`);
+    console.log(`    └── ic_launcher_foreground_monochrome.png`);
 
   } finally {
     // Cleanup temporary directory
